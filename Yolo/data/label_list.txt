@@ -1,0 +1,6 @@
+0 person
+1 crossing
+2 stop
+3 Left
+4 Straight
+5 Right
