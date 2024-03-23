@@ -29,6 +29,9 @@ output_data = multiprocessing.Array("b",range(50))#output_data
 Speed = multiprocessing.Array("i",range(2))#speed and angle (int)
 camera = multiprocessing.Array("b",range(50))#camera
 serial = multiprocessing.Array("b",range(50))#serial
+'''
+multiprocessing.Array  共享内存数组  多个进程间共享
+'''
 
 output_data.value = "data"
 Speed[0]  = 1545

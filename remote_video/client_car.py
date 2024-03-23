@@ -19,9 +19,9 @@ capture = cv2.VideoCapture(0)
 # ret,frame 是capture.read()方法的返回值
 # 其中ret是布尔值，如果读取帧正确，返回True;如果文件读到末尾，返回False。
 # frame 就是每一帧图像，是个三维矩阵
-ret, frame = capture.read()
-encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
-while ret:
+while 1:
+    ret, frame = capture.read()
+    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
     # 首先对图片进行编码，因为socket不支持直接发送图片
     # '.jpg'表示把当前图片frame按照jpg格式编码
     # result, img_encode = cv2.imencode('.jpg', frame)
