@@ -25,7 +25,7 @@ def socket_service():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind(('192.168.43.46', 8090))
+        s.bind(('', 8090))
         s.listen(True)
     except socket.error as msg:
         print (msg)
@@ -38,7 +38,7 @@ def socket_service():
         t.start()
  
 def deal_data(conn, addr):
-    print ('Accept new connection from {0}').format(addr)
+    #print ('Accept new connection from {0}').format(addr)
     while True:
         conn.send(str_encode)#发送图片的encode码
         time.sleep(1)
