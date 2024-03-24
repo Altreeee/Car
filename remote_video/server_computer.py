@@ -13,7 +13,7 @@ import sys
 def socket_client():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(('', 8090))#连接服务端
+        s.connect(('192.168.43.145', 8090))#连接服务端
     except socket.error as msg:
         print (msg)
         sys.exit(1)
