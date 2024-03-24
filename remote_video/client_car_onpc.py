@@ -1,43 +1,47 @@
-#!/usr/bin/python
-# -*-coding:utf-8 -*-
+#!/usr/bin/env python
+# -*- coding=utf-8 -*-
+ 
 import socket
+import numpy as np
+import urllib
 import cv2
-import numpy
-from time import sleep
-
-# socket.AF_INET 用于服务器与服务器之间的网络通信
-# socket.SOCK_STREAM 代表基于TCP的流式socket通信
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# 连接服务端
-address_server = ('10.0.0.30', 8888)
-sock.connect(address_server)
-
-# 从摄像头采集图像
-# 参数是0,表示打开笔记本的内置摄像头,参数是视频文件路径则打开视频
-'''capture = cv2.VideoCapture(0)'''
-capture = "source.jpg"
-frame = cv2.imread(capture)
-
-if frame is not None:
-    
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
-
-    # 首先对图片进行编码，因为socket不支持直接发送图片
-    # '.jpg'表示把当前图片frame按照jpg格式编码
-    # result, img_encode = cv2.imencode('.jpg', frame)
-    img_encode = cv2.imencode('.jpg', frame, encode_param)[1]
-    data = numpy.array(img_encode)
-    stringData = data.tostring()
-    # 首先发送图片编码后的长度
-    sock.send(str.encode(str(len(stringData)).ljust(16)))
-    # 然后一个字节一个字节发送编码的内容
-    # 如果是python对python那么可以一次性发送，如果发给c++的server则必须分开发因为编码里面有字符串结束标志位，c++会截断
-    # for i in range(0, len(stringData)):
-    #     sock.send(stringData[i])
-    sock.send(stringData)
-    # sleep(1)
-    ret, frame = capture.read()
-    cv2.resize(frame, (640, 480))
-
-sock.close()
-cv2.destroyAllWindows()
+import threading
+import sys
+import time
+ 
+ 
+print('this is Server')
+ 
+img = cv2.imread('1.jpg')#这个是我本地的图片，和这个py文件在同一文件夹下，注意格式
+# '.jpg'表示把当前图片img按照jpg格式编码，按照不同格式编码的结果不一样
+img_encode = cv2.imencode('.jpg', img)[1]
+ 
+data_encode = np.array(img_encode)
+str_encode = data_encode.tostring()
+encode_len = str(len(str_encode))
+print(encode_len)#输出看一下encode码的大小，可有可无
+ 
+def socket_service():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(('192.168.43.46', 8090))
+        s.listen(True)
+    except socket.error as msg:
+        print (msg)
+        sys.exit(1)
+    print ('Waiting connection...')
+ 
+    while True:
+        conn, addr = s.accept()
+        t = threading.Thread(target=deal_data, args=(conn, addr))
+        t.start()
+ 
+def deal_data(conn, addr):
+    print ('Accept new connection from {0}').format(addr)
+    while True:
+        conn.send(str_encode)#发送图片的encode码
+        time.sleep(1)
+    conn.close()
+ 
+socket_service()
