@@ -5,6 +5,7 @@ import socket
 import numpy as np
 import urllib
 import cv2 as cv
+import multiprocessing
 import threading
 import time
 import sys
@@ -15,7 +16,7 @@ print('this is Server')
 cap = cv.VideoCapture(0)
 cap.set(cv.CAP_PROP_FRAME_WIDTH, 260)
 cap.set(cv.CAP_PROP_FRAME_HEIGHT, 200)
- 
+
 def socket_service():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,8 +32,8 @@ def socket_service():
  
     while True:
         conn, addr = s.accept()
-        t = threading.Thread(target=deal_data, args=(conn, addr))
-        t.start()
+        process_video = threading.Thread(target=deal_data, args=(conn, addr))
+        process_video.start()
  
 def deal_data(conn, addr):
     #print ('Accept new connection from {0}'.format(addr))
