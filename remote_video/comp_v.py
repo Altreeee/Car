@@ -21,7 +21,7 @@ def socket_client():
     print('this is Client')
     while True:
         try:
-            receive_encode = s.recv(77777)#接收的字节数 最大值 2147483647 （31位的二进制）
+            receive_encode = s.recv(2147483647)#接收的字节数 最大值 2147483647 （31位的二进制）
             nparr = np.fromstring(receive_encode, dtype='uint8')
             img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
             cv2.imshow("Client_show", img_decode)
